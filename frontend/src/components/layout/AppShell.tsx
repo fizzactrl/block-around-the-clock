@@ -32,8 +32,8 @@ function SystemStatus() {
   return (
     <div className="rounded-xl border border-line bg-white/[0.02] p-3 text-[12px]">
       <div className="mb-2.5 flex items-center gap-2 font-medium text-ink">
-        <LiveDot color={healthError ? "var(--color-critical)" : "var(--color-ok)"} />
-        {healthError ? "Gateway offline" : "Gateway online"}
+        <LiveDot color={healthError ? "var(--color-critical)" : health ? "var(--color-ok)" : "var(--color-medium)"} />
+        {healthError ? "Gateway offline" : health ? "Gateway online" : "Connecting to gateway…"}
       </div>
       <div className="space-y-1.5 text-muted">
         <div className="flex items-center justify-between gap-2">

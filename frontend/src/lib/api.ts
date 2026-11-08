@@ -11,7 +11,34 @@ export class ApiError extends Error {
   }
 }
 
+const UNREACHABLE = BASE
+  ? "Cannot reach the defense gateway API. It may still be starting up; try again in a few seconds."
+  : "Cannot reach the defense gateway API. Is the backend running on :5050?";
+
+/* Free-tier hosts sleep when idle and take up to ~60s to wake. Before the first real request,
+   poll /health until the gateway answers, so pages wait instead of failing. Only health is retried:
+   no state-changing request is ever sent twice. */
+const WAKE_TIMEOUT_MS = 90_000;
+let ready: Promise<void> | null = null;
+export function waitForGateway(): Promise<void> {
+  if (!ready) {
+    ready = (async () => {
+      const started = Date.now();
+      for (let delay = 1000; ; delay = Math.min(delay * 1.5, 5000)) {
+        try {
+          const r = await fetch(`${BASE}/api/health`, { cache: "no-store" });
+          if (r.ok) return;
+        } catch { /* still waking */ }
+        if (Date.now() - started > WAKE_TIMEOUT_MS) throw new ApiError(0, "network_error", UNREACHABLE);
+        await new Promise((res) => setTimeout(res, delay));
+      }
+    })().catch((e) => { ready = null; throw e; });
+  }
+  return ready;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  await waitForGateway();
   let res: Response;
   try {
     res = await fetch(`${BASE}/api${path}`, {
@@ -19,7 +46,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
     });
   } catch {
-    throw new ApiError(0, "network_error", "Cannot reach the defense gateway API. Is the backend running on :5050?");
+    ready = null; // re-check the gateway before the next request
+    throw new ApiError(0, "network_error", UNREACHABLE);
   }
   const body = await res.json().catch(() => null);
   if (!res.ok || !body?.ok) {
