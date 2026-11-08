@@ -8,3 +8,4 @@ requests==2.34.2
 reportlab==5.1.0
 pytest==9.2.0
 certifi==2026.10.23
+gunicorn==23.0.0

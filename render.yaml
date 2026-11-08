@@ -1,0 +1,28 @@
+# Render Blueprint: deploys the Flask backend. Secrets are entered in the Render dashboard, never committed.
+services:
+  - type: web
+    name: block-around-the-clock-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # One worker: the containment orchestrator keeps its lock in-process.
+    startCommand: gunicorn -w 1 -k gthread --threads 8 --timeout 120 -b 0.0.0.0:$PORT run:app
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: block_around_the_clock
+      - key: TOKENIZATION_SECRET
+        generateValue: true
+      - key: NEMOTRON_MODEL
+        value: nvidia/nemotron-3.5-lightning-30b-a3b
+      - key: CORS_ORIGINS
+        value: https://blockaroundtheclock.fishing,https://www.blockaroundtheclock.fishing
+      - key: SEED_ON_START
+        value: "true"
