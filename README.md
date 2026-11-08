@@ -2,7 +2,19 @@
 
 **A phone-carrier security system that spots scam calls while they're happening and uses an NVIDIA Nemotron AI agent to lock down a victim's accounts afterward.**
 
-Built for HackUTD · NVIDIA "Use Nemotron Beyond a Chatbot" track
+Built at HackUTD 2026 · 🌐 [blockaroundtheclock.fishing](https://blockaroundtheclock.fishing)
+
+---
+
+## Hackathon tracks
+
+| Track | How we followed it |
+|---|---|
+| **NVIDIA: Use Nemotron Beyond a Chatbot** | Nemotron runs a multi-step **tool-calling agent**, not a chat window. It assesses an incident, picks a lockdown action (lock the SIM, freeze credit, revoke logins and so on), our server runs it, and the real result goes back to Nemotron so it can replan. When a tool fails, it adapts: it retries, uses a fallback, or asks a human. An evaluation mode grades the agent on four scenarios; the last live run passed 23/23 checks. |
+| **T-Mobile: Protect customers from scams and fraud** | Detection is only the first step. The app protects people **before** a scam (risk-scoring SIM swaps, number transfers, spoofed calls and smishing links), **during** a call (lowering the volume, a private warning whisper, then a full-screen alert as risk rises) and **after** it (automatic account lockdown and a ready-to-file FTC report). Each risk score comes with the reasons behind it and a clear next step. Personal data is replaced with tokens in the browser before it leaves the device. |
+| **Winstead PC: Cyber Incident Response Dashboard** | The **War Room** is the command center. It covers **incident documentation** (status, severity, timeline, evidence) with **live status updates**, and a **scope section** listing which kinds of personal data were involved and what happened to each account. **Security** assumes the network may be compromised: a tamper-evident hash-chained audit log, every action checked against an allowlist, no real personal data stored, and secrets kept on the server only. For **ease of use**, every screen offers one obvious next action and labels everything in plain words. *Not built yet:* user accounts with admin-managed access, and team chat inside the dashboard. Both are on our roadmap below. |
+| **MongoDB Atlas** | All app data lives in **MongoDB Atlas**: incidents, sanitized events, containment actions, Nemotron agent runs (with full step traces), evaluation results and the hash-chained audit log. A unique index on the audit sequence enforces the chain's order. |
+| **GoDaddy Registry: Best Domain Name** | We registered **[blockaroundtheclock.fishing](https://blockaroundtheclock.fishing)**. The project stops phishing around the clock, so a `.fishing` domain fit. |
 
 ---
 
@@ -89,6 +101,8 @@ Under the hood, each lockdown action is a small simulated "adapter" with its own
 - **Real call analysis** that works on actual call audio, not scripted transcripts.
 - **More evaluation scenarios**, such as several attacks at once, partial outages and attempts to manipulate the agent.
 - **Human review workflows**, so security teams can approve or reject the agent's riskier actions from their phones.
+- **Team access and chat:** sign-in with admin-managed user accounts and roles, plus an encrypted chat inside the War Room so responders can coordinate without relying on email or Slack, which an attacker might be reading.
+- **Isolated deployment:** a self-contained build that can run on its own hardware, separate from a network that may already be compromised.
 
 ---
 
