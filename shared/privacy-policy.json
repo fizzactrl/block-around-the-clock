@@ -1,0 +1,29 @@
+{
+  "version": "2026.11-demo",
+  "description": "Single source of truth for PII detection, used by the browser tokenizer (edge) and the Flask validator (defense in depth). Regex sources are written to be compatible with both JavaScript and Python.",
+  "detectors": [
+    { "type": "CARD", "label": "Payment card", "pattern": "\\b(?:\\d[ -]?){12,18}\\d\\b", "flags": "", "group": 0, "luhn": true },
+    { "type": "SSN", "label": "Social Security number", "pattern": "\\b\\d{3}[- ]\\d{2}[- ]\\d{4}\\b", "flags": "", "group": 0 },
+    { "type": "PHONE", "label": "Phone number", "pattern": "(?:\\+1[ .-]?)?(?:\\(\\d{3}\\)|\\b\\d{3})[ .-]?\\d{3}[ .-]?\\d{4}\\b", "flags": "", "group": 0 },
+    { "type": "EMAIL", "label": "Email address", "pattern": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b", "flags": "", "group": 0 },
+    { "type": "ACCOUNT", "label": "Account number", "pattern": "\\b(?:account|acct)(?: number| no\\.?| #)?(?: ending in)?[ :#]*(\\d{4,17})\\b", "flags": "i", "group": 1 },
+    { "type": "OTP", "label": "One-time code / PIN", "pattern": "\\b(?:code|passcode|pin|otp)(?: is)?[ :#]*(\\d{4,8})\\b", "flags": "i", "group": 1 },
+    { "type": "BANK", "label": "Banking entity", "dictionary": "banks", "flags": "i" },
+    { "type": "PERSON", "label": "Person name", "dictionary": "names" }
+  ],
+  "dictionaries": {
+    "banks": [
+      "JPMorgan Chase", "Chase", "Bank of America", "Wells Fargo", "Citibank", "Citi", "Capital One",
+      "U.S. Bank", "PNC", "Ally Bank", "Navy Federal", "Charles Schwab", "Goldman Sachs", "TD Bank",
+      "Truist", "American Express", "Discover", "USAA", "First Horizon", "Fifth Third"
+    ],
+    "first_names": [
+      "Maya", "Daniel", "Priya", "Marcus", "Elena", "Jordan", "Aisha", "Tomas", "Grace", "Wei",
+      "Sofia", "Andre", "Hannah", "Kenji", "Olivia", "Rafael", "Nadia", "Samuel", "Leila", "Owen"
+    ],
+    "last_names": [
+      "Chen", "Okafor", "Ramirez", "Patel", "Novak", "Whitfield", "Haddad", "Lindqvist", "Brennan",
+      "Morales", "Tanaka", "Osei", "Kowalski", "Fischer", "Abernathy"
+    ]
+  }
+}

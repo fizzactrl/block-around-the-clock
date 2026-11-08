@@ -1,0 +1,9 @@
+{
+  "name": "block-around-the-clock",
+  "private": true,
+  "scripts": {
+    "dev": "./scripts/dev.sh",
+    "test": "./scripts/test.sh",
+    "seed": "cd backend && .venv/bin/python -m app.seed"
+  }
+}
